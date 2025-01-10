@@ -6,6 +6,7 @@ import cookieParser from "cookie-parser";
 import authRoute from "./routes/user.route.js"
 import patientRoute from "./routes/Patient.route.js"
 import pantryRoute from "./routes/mealPreperation.route.js"
+import deliveryRoute from "./routes/mealDelivery.route.js"
 
 const app = express();
 dotenv.config();
@@ -15,6 +16,7 @@ app.use(express.json());
 app.use("/api/auth", authRoute);
 app.use("/api/patient", patientRoute);
 app.use("/api/meal", pantryRoute);
+app.use("/api/delivery", deliveryRoute);
 
 // connection to database
 const connect = async () => {

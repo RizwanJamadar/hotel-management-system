@@ -1,28 +1,28 @@
 import User from "../models/User.model.js"
 import { createError } from "../utils/error.js";
-import jwt from "jsonwebtoken"; 
+import jwt from "jsonwebtoken";
 import bcrypt from "bcryptjs";
 
 export const register = async (req, res, next) => {
-    try {
-        const salt = bcrypt.genSaltSync(10);
-        const hash = bcrypt.hashSync(req.body.password, salt);
+  try {
+    const salt = bcrypt.genSaltSync(10);
+    const hash = bcrypt.hashSync(req.body.password, salt);
 
-        const newUser = new User({
-            ...req.body,
-            password: hash,
-        });
+    const newUser = new User({
+      ...req.body,
+      password: hash,
+    });
 
-        await newUser.save();
-        res.status(200).send("User has been created.");
-    } catch (error) {
-        next(error);
-    }
+    await newUser.save();
+    res.status(200).send("User has been created.");
+  } catch (error) {
+    next(error);
+  }
 }
 
-export const login = async (req,res,next) => {
-    try {
-        const user = await User.findOne({ email: req.body.email });
+export const login = async (req, res, next) => {
+  try {
+    const user = await User.findOne({ email: req.body.email });
     if (!user) return next(createError(404, "User not found!"));
 
     const isPasswordCorrect = await bcrypt.compare(
@@ -38,15 +38,20 @@ export const login = async (req,res,next) => {
     const { password, role, ...otherDetails } = user._doc;
 
     res
+      .cookie("Authorization", token, {
+        httpOnly: true, // Prevents client-side scripts from accessing the token
+        secure: process.env.NODE_ENV === "production", // Use secure cookies in production
+        sameSite: "strict", // Helps prevent CSRF
+      })
       .status(200)
-      .json({ details: { ...otherDetails }, role, token });
-    } catch (error) {
-        next(error);
-    }
+      .json({ details: { ...otherDetails }, role });
+  } catch (error) {
+    next(error);
+  }
 }
 
-export const logout = async (req,res) => {
-    res
+export const logout = async (req, res) => {
+  res
     .clearCookie("Authorization", {
       sameSite: "none",
       secure: true,
