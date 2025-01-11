@@ -8,7 +8,7 @@ const patientSchema = new mongoose.Schema({
     bed_number: { type: String, required: true },
     floor_number: { type: String },
     age: { type: Number },
-    gender: { type: String, enum: ['Male', 'Female', 'Other'], required: true },
+    gender: { type: String, required: true },
     contact_info: { type: String },
     emergency_contact: { type: String },
     diet_chart: { type: mongoose.Schema.Types.ObjectId, ref: 'DietChart' }, 

@@ -2,6 +2,7 @@ import express from "express";
 import dotenv from "dotenv";
 import mongoose from "mongoose";
 import cookieParser from "cookie-parser";
+import cors from "cors";
 
 import authRoute from "./routes/user.route.js"
 import patientRoute from "./routes/Patient.route.js"
@@ -10,6 +11,7 @@ import deliveryRoute from "./routes/mealDelivery.route.js"
 
 const app = express();
 dotenv.config();
+app.use(cors())
 app.use(cookieParser())
 app.use(express.json());
 

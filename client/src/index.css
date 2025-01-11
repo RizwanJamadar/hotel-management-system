@@ -1,3 +1,45 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+body{
+    /* background-color:#d6d6f4; */
+    width: 100vw;
+    overflow-x: hidden;
+    font-family: "Montserrat",sans-serif;
+}
+
+html::-webkit-scrollbar{
+  display: none;
+}
+
+.bg-black-gradient{
+  background: linear-gradient(
+    135deg,
+    #d8e1f8 10%,
+    #b2c6f1 50%,
+    #8da9eb 90%
+  );
+}
+
+.sidebar {
+  border: 1px solid rgb(147, 206, 230);
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+  -webkit-animation: slide-top 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94) both;
+  animation: slide-top 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94) both;
+}
+
+@-webkit-keyframes slide-top {
+    0% {
+      -webkit-transform: translateY(100px);
+      transform: translateY(100px);
+    }
+    100% {
+      -webkit-transform: translateY(0);
+      transform: translateY(0);
+    }
+}
+
+.animatedButton{
+  animation-duration: 10000ms;
+}
