@@ -19,7 +19,7 @@ const PantryStaff = () => {
 
       try {
         const response = await axios.get(
-          `http://localhost:8800/api/meal/my-tasks`,
+          `${import.meta.env.VITE_URL_BACK_END}/meal/my-tasks`,
           {
             headers: {
               authorization: `Bearer ${token}`, // Add the token to the Authorization header
