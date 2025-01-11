@@ -82,7 +82,7 @@ const Navbar = () => {
 
       {/* DESKTOP MENU */}
       <div className="hidden md:flex items-center gap-8 xl:gap-12 font-medium mx-auto">
-        {user.role == "Manager" && (
+        {user?.role == "Manager" && (
           <>
             <Link
               to="/add-employee"
@@ -95,7 +95,7 @@ const Navbar = () => {
             </Link>
           </>
         )}
-        {(user.role === "PantryStaff" || user.role === "DeliveryPersonnel") && (
+        {(user?.role === "PantryStaff" || user?.role === "DeliveryPersonnel") && (
           <Link
             to="/assign-task"
             className="py-1 text-white hover:text-indigo-200 transition duration-300"
