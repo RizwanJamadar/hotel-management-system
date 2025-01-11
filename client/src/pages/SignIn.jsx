@@ -1,6 +1,39 @@
-import React from "react";
+import React, { useState } from "react";
+import axios from "axios";
+import { useNavigate } from "react-router-dom";
 
 const SignIn = () => {
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [errorMessage, setErrorMessage] = useState("");
+  const navigate = useNavigate();
+
+  // Handle Email Input Change
+  const handleEmailChange = (e) => {
+    setEmail(e.target.value);
+  };
+
+  // Handle Form Submission
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    try {
+      const res = await axios.post(`${import.meta.env.VITE_URL_BACK_END}/auth/login`, {
+        email,
+        password,
+      });
+
+      localStorage.setItem("currentUser", JSON.stringify(res.data));
+      // Storing the JWT Token in sessionStorage
+      const { token } = res.data;
+      sessionStorage.setItem("authToken", token);
+
+      // Redirect user after successful login
+      navigate("/");
+    } catch (error) {
+      setErrorMessage(error.response?.data?.message || "Login failed. Please try again.");
+    }
+  };
+
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-100 px-4">
       <div className="bg-white shadow-md rounded-lg p-8 w-full max-w-md">
@@ -14,7 +47,7 @@ const SignIn = () => {
         </p>
 
         {/* Form */}
-        <form className="space-y-4">
+        <form className="space-y-4" onSubmit={handleSubmit}>
           {/* Email Field */}
           <div>
             <label
@@ -29,6 +62,7 @@ const SignIn = () => {
               name="email"
               required
               placeholder="johndoe@xyz.com"
+              onChange={handleEmailChange}
               className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md text-gray-900 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
             />
           </div>
@@ -47,9 +81,15 @@ const SignIn = () => {
               name="password"
               required
               placeholder="Your password"
+              onChange={(e) => setPassword(e.target.value)}
               className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md text-gray-900 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
             />
           </div>
+
+          {/* Error Message */}
+          {errorMessage && (
+            <p className="text-red-600 text-sm">{errorMessage}</p>
+          )}
 
           {/* Submit Button */}
           <div>

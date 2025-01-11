@@ -1,10 +1,12 @@
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
-import SignIn from "./pages/SignIn.jsx"
-import Home from "./pages/Home.jsx"
+import SignIn from "./pages/SignIn.jsx";
+import Home from "./pages/Home.jsx";
 import NotFound from "./pages/NotFound.jsx";
-import AddPatient from "./pages/AddPatient.jsx"
+import AddPatient from "./pages/AddPatient.jsx";
 import MainLayout from "./Layout/MainLayout.jsx";
-
+import AddEmployee from "./pages/AddEmployee.jsx";
+import PantryStaff from "./pages/PantryStaff.jsx";
+import { useEffect } from "react";
 
 const router = createBrowserRouter([
   {
@@ -18,9 +20,14 @@ const router = createBrowserRouter([
         path: "/addPatient",
         element: <AddPatient />,
       },
+      ,
       {
-        path: "/login",
-        element: <SignIn />,
+        path: "/add-employee",
+        element: <AddEmployee />,
+      },
+      {
+        path: "assign-task",
+        element: <PantryStaff />,
       },
       {
         path: "*",
@@ -28,10 +35,15 @@ const router = createBrowserRouter([
       },
     ],
   },
+  {
+    path: "/login",
+    element: <SignIn />,
+  },
 ]);
 
 // Provide the router to the application
 const App = () => {
+
   return <RouterProvider router={router} />;
 };
 

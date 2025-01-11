@@ -2,8 +2,8 @@ import jwt from "jsonwebtoken";
 import { createError } from "../utils/error.js";
 
 export const verifyToken = async (req, res, next) => {
-  const token = req.headers.Authorization ;
-  // console.log(token);
+  const token = req.headers.authorization || req.cookies.Authorization;
+  console.log(token);
 
   if (!token) {
     return next(createError(401, "You are not authenticated!"));
@@ -13,7 +13,7 @@ export const verifyToken = async (req, res, next) => {
     if (err) return next(createError(403, "Token is not valid!"));
     
     req.user = user;
-    if (req.user.role === "Manager") {
+    if (req.user.Role === "Manager") {
         next();
     } else {
       return next(createError(403, "You are not authorized!"));

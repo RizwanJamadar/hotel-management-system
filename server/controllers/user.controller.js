@@ -44,7 +44,7 @@ export const login = async (req, res, next) => {
         sameSite: "strict", // Helps prevent CSRF
       })
       .status(200)
-      .json({ details: { ...otherDetails }, role });
+      .json({ details: { ...otherDetails }, role, token });
   } catch (error) {
     next(error);
   }

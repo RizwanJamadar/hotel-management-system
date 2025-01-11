@@ -2,6 +2,8 @@ import React, { useState } from "react";
 import axios from "axios";
 
 const AddPatient = () => {
+  const [successMessage, setSuccessMessage] = useState("");
+  const [errorMessage, setErrorMessage] = useState("");
   const [patientDetails, setPatientDetails] = useState({
     name: "",
     age: "",
@@ -19,7 +21,7 @@ const AddPatient = () => {
       night_meal: { meal_name: "", ingredients: "", instructions: "" },
     },
     general_instructions: "",
-    staff_id:""
+    staff_id: "",
   });
 
   const handleInputChange = (e, section, field) => {
@@ -59,7 +61,8 @@ const AddPatient = () => {
       emergency_contact: patientDetails.emergency_contact,
       diet_chart_data: {
         morning_meal: {
-          meal_name: patientDetails.diet_chart_data?.morning_meal?.meal_name || "",
+          meal_name:
+            patientDetails.diet_chart_data?.morning_meal?.meal_name || "",
           ingredients: patientDetails.diet_chart_data?.morning_meal?.ingredients
             ? patientDetails.diet_chart_data.morning_meal.ingredients.split(",")
             : [],
@@ -67,7 +70,8 @@ const AddPatient = () => {
             patientDetails.diet_chart_data?.morning_meal?.instructions || "",
         },
         evening_meal: {
-          meal_name: patientDetails.diet_chart_data?.evening_meal?.meal_name || "",
+          meal_name:
+            patientDetails.diet_chart_data?.evening_meal?.meal_name || "",
           ingredients: patientDetails.diet_chart_data?.evening_meal?.ingredients
             ? patientDetails.diet_chart_data.evening_meal.ingredients.split(",")
             : [],
@@ -75,22 +79,31 @@ const AddPatient = () => {
             patientDetails.diet_chart_data?.evening_meal?.instructions || "",
         },
         night_meal: {
-          meal_name: patientDetails.diet_chart_data?.night_meal?.meal_name || "",
+          meal_name:
+            patientDetails.diet_chart_data?.night_meal?.meal_name || "",
           ingredients: patientDetails.diet_chart_data?.night_meal?.ingredients
             ? patientDetails.diet_chart_data.night_meal.ingredients.split(",")
             : [],
-          instructions: patientDetails.diet_chart_data?.night_meal?.instructions || "",
+          instructions:
+            patientDetails.diet_chart_data?.night_meal?.instructions || "",
         },
       },
       general_instructions: patientDetails.general_instructions,
-      staff_id: "677fa484f1492e5f33b919e3"
+      staff_id: "677fa484f1492e5f33b919e3",
     };
 
     try {
-      const response = await axios.post(`${import.meta.env.VITE_URL_BACK_END}/patient/add-patient`, patientData);
+      const response = await axios.post(
+        `${import.meta.env.VITE_URL_BACK_END}/patient/add-patient`,
+        patientData
+      );
+      setSuccessMessage("Patient added successfully!");
+      setErrorMessage("");
       console.log("Patient added:", response.data);
     } catch (error) {
       console.error("Error adding patient:", error);
+      setErrorMessage("Failed to add patient. Please try again.");
+      setSuccessMessage("");
     }
   };
 
@@ -100,6 +113,17 @@ const AddPatient = () => {
         <h1 className="text-2xl font-bold text-indigo-600 mb-6 text-center">
           Add New Patient
         </h1>
+
+        {successMessage && (
+          <div className="mb-4 p-4 text-green-800 bg-green-100 rounded-lg">
+            {successMessage}
+          </div>
+        )}
+        {errorMessage && (
+          <div className="mb-4 p-4 text-red-800 bg-red-100 rounded-lg">
+            {errorMessage}
+          </div>
+        )}
 
         <form className="space-y-6" onSubmit={handleSubmit}>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 flex-wrap">

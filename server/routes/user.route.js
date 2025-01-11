@@ -1,10 +1,11 @@
 import express from "express";
-import { login, register, logout } from "../controllers/User.controller.js";
+// this error is resolved ..
+import { login, register, logout } from "../controllers/user.controller.js";
 import {verifyToken} from "../utils/verifyToken.js"
 
 const router = express.Router();
 
-router.post("/register",verifyToken, register);
+router.post("/register", register);
 router.post("/login", login);
 
 router.post("/logout", logout);

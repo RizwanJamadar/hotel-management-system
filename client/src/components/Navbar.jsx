@@ -1,8 +1,23 @@
+import axios from "axios";
 import { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 const Navbar = () => {
   const [open, setOpen] = useState(false);
+
+  const navigate = useNavigate();
+  const user = JSON.parse(localStorage.getItem("currentUser"));
+  // console.log(user?.role);
+
+  const handleLogout = async () =>{
+    try {
+      const res = await axios.post(`${import.meta.env.VITE_URL_BACK_END}/auth/logout`)
+      localStorage.setItem("currentUser", null)
+      navigate("/login")
+    } catch (e) {
+      console.log(e)
+    }
+  }
 
   return (
     <div className="w-full h-16 md:h-20 bg-indigo-600 flex items-center justify-between px-4 md:px-8 lg:px-16">
@@ -43,35 +58,62 @@ const Navbar = () => {
           >
             Add Patient
           </Link>
-          <Link
-            to="/assign-task"
-            className="py-1 text-white hover:text-indigo-200 transition duration-300"
-          >
-            Assign Task
-          </Link>
+          {(user?.role === "PantryStaff" ||
+            user?.role === "DeliveryPersonnel") && (
+            <Link
+              to="/assign-task"
+              className="py-1 text-white hover:text-indigo-200 transition duration-300"
+            >
+              Assign Task
+            </Link>
+          )}
           <Link
             to="/check-status"
             className="py-1 text-white hover:text-indigo-200 transition duration-300"
           >
             Check Status
           </Link>
+
+          <button className="px-2 py-1 bg-red-500 text-white font-normal rounded-lg shadow-md hover:bg-red-600 focus:outline-none focus:ring-2 focus:ring-red-300 transition duration-300">
+            Logout
+          </button>
         </div>
       </div>
 
       {/* DESKTOP MENU */}
       <div className="hidden md:flex items-center gap-8 xl:gap-12 font-medium mx-auto">
-        <Link to="/add-employee" className="text-white hover:text-indigo-200">
-          Add Employee
-        </Link>
-        <Link to="/add-patient" className="text-white hover:text-indigo-200">
-          Add Patient
-        </Link>
-        <Link to="/assign-task" className="text-white hover:text-indigo-200">
-          Assign Task
-        </Link>
+        {user.role == "Manager" && (
+          <>
+            <Link
+              to="/add-employee"
+              className="text-white hover:text-indigo-200"
+            >
+              Add Employee
+            </Link>
+            <Link to="/addPatient" className="text-white hover:text-indigo-200">
+              Add Patient
+            </Link>
+          </>
+        )}
+        {(user.role === "PantryStaff" || user.role === "DeliveryPersonnel") && (
+          <Link
+            to="/assign-task"
+            className="py-1 text-white hover:text-indigo-200 transition duration-300"
+          >
+            Assign Task
+          </Link>
+        )}
         <Link to="/check-status" className="text-white hover:text-indigo-200">
           Check Status
         </Link>
+        {user && (
+          <button
+            onClick={handleLogout}
+            className="px-4 py-2 bg-red-500 text-white font-semibold rounded-lg shadow-md hover:bg-red-600 focus:outline-none focus:ring-2 focus:ring-red-300 transition duration-300"
+          >
+            Logout
+          </button>
+        )}
       </div>
     </div>
   );
