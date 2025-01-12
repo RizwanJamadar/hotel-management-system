@@ -8,7 +8,12 @@ export const fetchTasks = async (req, res, next) => {
         console.log(staff_id);// Extracted from JWT token
 
         const tasks = await MealPreparation.find({ staff_id })
-            .populate('diet_chart_id') // Populate diet chart details
+            .populate({
+                path: 'diet_chart_id', // Populate diet chart details
+                populate: {
+                    path: 'patient_id', // Populate patient details within diet chart
+                },
+            })
             .exec();
 
         res.status(200).json({ tasks });
@@ -23,38 +28,39 @@ export const updateMeal = async (req, res, next) => {
     try {
         // MealPreparation ID
         const { id } = req.params;
-        // Destructure individual meal statuses from the request body
-        const { morning, evening, night } = req.body;
+        // Destructure meal type and status from the request body
+        const { mealType, status } = req.body;
 
-        // Validate individual meal statuses
+        // Validate the meal type and status
         const validStatuses = ['Pending', 'In Progress', 'Completed'];
-        if (
-            (morning && !validStatuses.includes(morning)) ||
-            (evening && !validStatuses.includes(evening)) ||
-            (night && !validStatuses.includes(night))
-        ) {
+        const validMealTypes = ['morning', 'evening', 'night'];
+
+        if (!validMealTypes.includes(mealType)) {
+            return res.status(400).json({ message: 'Invalid meal type' });
+        }
+
+        if (!validStatuses.includes(status)) {
             return res.status(400).json({ message: 'Invalid status' });
         }
 
+        // Find the MealPreparation task
         const task = await MealPreparation.findById(id).populate('diet_chart_id');
         if (!task) return res.status(404).json({ message: 'Task not found!' });
 
         const dietChart = task.diet_chart_id;
         if (!dietChart) return res.status(404).json({ message: 'Diet chart not found!' });
 
-        // Update individual meal statuses in the DietChart
-        if (morning) dietChart.morning_meal.status = morning;
-        if (evening) dietChart.evening_meal.status = evening;
-        if (night) dietChart.night_meal.status = night;
+        // Update the status of the selected meal (morning, evening, or night)
+        dietChart[`${mealType}_meal`].status = status;
 
         // Save the updated DietChart
         await dietChart.save();
 
         res.status(200).json({
-            message: 'Meal statuses updated successfully',
+            message: 'Meal status updated successfully',
             diet_chart: dietChart,
         });
     } catch (error) {
-        next(error)
+        next(error);
     }
-}
+};

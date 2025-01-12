@@ -7,17 +7,16 @@ const Navbar = () => {
 
   const navigate = useNavigate();
   const user = JSON.parse(localStorage.getItem("currentUser"));
-  // console.log(user?.role);
 
-  const handleLogout = async () =>{
+  const handleLogout = async () => {
     try {
-      const res = await axios.post(`${import.meta.env.VITE_URL_BACK_END}/auth/logout`)
-      localStorage.setItem("currentUser", null)
-      navigate("/login")
+      await axios.post(`${import.meta.env.VITE_URL_BACK_END}/auth/logout`);
+      localStorage.setItem("currentUser", null);
+      navigate("/login");
     } catch (e) {
-      console.log(e)
+      console.log(e);
     }
-  }
+  };
 
   return (
     <div className="w-full h-16 md:h-20 bg-indigo-600 flex items-center justify-between px-4 md:px-8 lg:px-16">
@@ -46,18 +45,22 @@ const Navbar = () => {
             !open ? "hidden" : "flex"
           } p-6 bg-indigo-700 absolute flex justify-end items-start flex-col top-20 right-0 mx-4 my-2 min-w-[150px] rounded-xl`}
         >
-          <Link
-            to="/add-employee"
-            className="py-1 text-white hover:text-indigo-200 transition duration-300"
-          >
-            Add Employee
-          </Link>
-          <Link
-            to="/addPatient"
-            className="py-1 text-white hover:text-indigo-200 transition duration-300"
-          >
-            Add Patient
-          </Link>
+          {user?.role === "Manager" && (
+            <>
+              <Link
+                to="/add-employee"
+                className="py-1 text-white hover:text-indigo-200 transition duration-300"
+              >
+                Add Employee
+              </Link>
+              <Link
+                to="/addPatient"
+                className="py-1 text-white hover:text-indigo-200 transition duration-300"
+              >
+                Add Patient
+              </Link>
+            </>
+          )}
           {(user?.role === "PantryStaff" ||
             user?.role === "DeliveryPersonnel") && (
             <Link
@@ -73,16 +76,20 @@ const Navbar = () => {
           >
             Check Status
           </Link>
-
-          <button className="px-2 py-1 bg-red-500 text-white font-normal rounded-lg shadow-md hover:bg-red-600 focus:outline-none focus:ring-2 focus:ring-red-300 transition duration-300">
-            Logout
-          </button>
+          {user && (
+            <button
+              onClick={handleLogout}
+              className="px-2 py-1 bg-red-500 text-white font-normal rounded-lg shadow-md hover:bg-red-600 focus:outline-none focus:ring-2 focus:ring-red-300 transition duration-300"
+            >
+              Logout
+            </button>
+          )}
         </div>
       </div>
 
       {/* DESKTOP MENU */}
       <div className="hidden md:flex items-center gap-8 xl:gap-12 font-medium mx-auto">
-        {user?.role == "Manager" && (
+        {user?.role === "Manager" && (
           <>
             <Link
               to="/add-employee"
@@ -95,10 +102,11 @@ const Navbar = () => {
             </Link>
           </>
         )}
-        {(user?.role === "PantryStaff" || user?.role === "DeliveryPersonnel") && (
+        {(user?.role === "PantryStaff" ||
+          user?.role === "DeliveryPersonnel") && (
           <Link
             to="/assign-task"
-            className="py-1 text-white hover:text-indigo-200 transition duration-300"
+            className="text-white hover:text-indigo-200 transition duration-300"
           >
             Assign Task
           </Link>

@@ -6,6 +6,7 @@ import AddPatient from "./pages/AddPatient.jsx";
 import MainLayout from "./Layout/MainLayout.jsx";
 import AddEmployee from "./pages/AddEmployee.jsx";
 import PantryStaff from "./pages/PantryStaff.jsx"; // Import the ProtectedRoute component
+import UpdateMeal from "./pages/UpdateMeal.jsx";
 
 
 const ProtectedRoute = ({ children }) => {
@@ -54,6 +55,14 @@ const router = createBrowserRouter([
             <PantryStaff />
           </ProtectedRoute>
         ),
+      },
+      {
+        path:"check-status",
+        element:(
+          <ProtectedRoute>
+            <UpdateMeal/>
+          </ProtectedRoute>
+        )
       },
       {
         path: "*",
